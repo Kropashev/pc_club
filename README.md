@@ -16,7 +16,7 @@ g++ pc_club.cpp -o pc_club
 <table>
     <tr>
         <th>Входной файл</th>
-        <th>Вывод в консоль</th>
+        <th>Вывод в консоли</th>
     </tr>
     <tr>
         <td><p> 3<br>
@@ -68,7 +68,7 @@ g++ pc_club.cpp -o pc_club
 <table>
     <tr>
         <th>Входной файл</th>
-        <th>Вывод в консоль</th>
+        <th>Вывод в консоли</th>
     </tr>
     <tr>
         <td><p> 3<br>
@@ -135,7 +135,7 @@ g++ pc_club.cpp -o pc_club
                 12:43 4 client2<br>
                 15:52 4 client4<br>
                 16:52 4 client5<br>
-                16:52 13 ClientUnknown
+                16:52 13 ClientUnknown<br>
                 17:00 1 aaaa<br>
                 18:00 1 bbbb<br>
                 19:00 1 aaa<br>
