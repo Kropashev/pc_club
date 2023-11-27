@@ -95,13 +95,13 @@ int plus_revenue_pc(int price, int inttime_res) {
 }
 
 struct Pc_club {
-	std::queue<std::string> queue;				// очередь за посадку за столы
-	std::set<std::string> in_club;				// ники человек внутри клуба
-	std::map<int, mytime> pc_start_session;		// связь компа и врмеени начала текущео члеовека
-	std::map<std::string, int> visiter_pc;		// связь человека и номером пк 
-	std::vector<bool> busy_pc;					// отображает свободен ли пк
-	std::vector<int> revenue_pc;				// сколько дененег принес и-тый пк
-	std::vector<mytime> time_work_pc;			// сколько времени проработал и-тый пк
+	std::queue<std::string> queue;				// РѕС‡РµСЂРµРґСЊ РЅР° РїРѕСЃР°РґРєСѓ Р·Р° РїРє
+	std::set<std::string> in_club;				// РёРјРµРЅР° РїРѕСЃРµС‚РёС‚РµР»РµР№ РєР»СѓР±Р°
+	std::map<int, mytime> pc_start_session;			// СЃРІСЏР·СЊ РїРє Рё РІСЂРµРјРµРЅРё РЅР°С‡Р°Р»Р° С‚РµРєСѓС‰РµРіРѕ СЃРµР°РЅСЃР°
+	std::map<std::string, int> visiter_pc;			// РІСЏР·СЊ РёРјРµРЅРё Рё РЅРѕРјРµСЂР° РїРє
+	std::vector<bool> busy_pc;				// РѕС‚РѕР±СЂР°Р¶Р°РµС‚ СЃРІРѕР±РѕРґРµРЅ Р»Рё i-С‚С‹Р№ РїРє
+	std::vector<int> revenue_pc;				// СЃРєРѕР»СЊРєРѕ РґРµРЅРµРі РїСЂРёРЅРµСЃ i-С‚С‹Р№ РїРє
+	std::vector<mytime> time_work_pc;			// СЃРєРѕР»СЊРєРѕ РІСЂРµРјРµРЅРё РїСЂРѕСЂР°Р±РѕС‚Р°Р» i-С‚С‹Р№ РїРє
 	int price;
 	int num_pc;
 
@@ -133,68 +133,66 @@ int main(int argc, char* argv[]) {
 
 	Pc_club club {};
 
-	// открыть входной файл
+	// Г®ГІГЄГ°Г»ГІГј ГўГµГ®Г¤Г­Г®Г© ГґГ Г©Г«
 	if (argv[1] == NULL) {
 		std::cout << "File not entered";
 		return -1;
 	}
 	std::ifstream file_in(argv[1]);
-	std::ofstream file_out("out.txt");
 	std::string line;
-	if (!file_in) { // открылся файл не открылся?
+	if (!file_in) { // С„Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ
 		std::cout << "Error 1 - no open file\n";
 		return -1;
 	}
 
-	// считать заголовок про кол-во компов, врем работы, цену
-	// считать кол-во компов
+	// СЃС‡РёС‚Р°С‚СЊ РєРѕР»-РІРѕ РїРє
 	getline(file_in, line);
-	for (char c : line) // проверка формата первой строки
+	for (char c : line) // РїСЂРѕРІРµСЂРєР° С„РѕСЂРјР°С‚Р° 1Р№ СЃС‚СЂРѕРєРё
 		if (!isdigit(c)) {
 			std::cout << line << std::endl;
 			return -2;
 		}
 	club.num_pc = stoi(line);
 
-	// считать врем открытия и закрытия
+	// СЃС‡РёС‚Р°С‚СЊ РІСЂРµРјСЏ РѕС‚РєСЂС‹С‚РёСЏ Рё Р·Р°РєСЂС‹С‚РёСЏ РєР»СѓР±Р°
 	getline(file_in, line);
-	// раделяем на 2 врменини по пробелу
+	//СЂР°РґРµР»Р°РµРј СЃС‚СЂРѕРєСѓ РїРѕ РїСЂРѕР±РµР»Сѓ
 	std::vector<std::string> time_pc = myfuncline(line, ' ');
-	if (time_pc.size() > 2) { // проверка формата второй строки
+	if (time_pc.size() > 2) { // РїСЂРѕРІРµСЂРєР° РЅР° С„РѕСЂРјР°С‚ 2Р№ СЃС‚СЂРѕРєРё
 		std::cout << line << std::endl;
 		return -3;
 	}
 	std::vector<std::string> timet = myfuncline(time_pc[0], ':');
-	if (!(isdigit(time_pc[0][0]) and isdigit(time_pc[0][1]) and time_pc[0][2] == ':' and isdigit(time_pc[0][3]) and isdigit(time_pc[0][4]) and time_pc[0].size() < 6)) {// проверка формата второй строки
+	if (!(isdigit(time_pc[0][0]) and isdigit(time_pc[0][1]) and time_pc[0][2] == ':' and isdigit(time_pc[0][3]) and isdigit(time_pc[0][4]) and time_pc[0].size() < 6)) {// РїСЂРІРѕРµСЂРєР° С„РѕСЂРјР°С‚Р° РІСЂРјРµРЅРё
 		std::cout << line << std::endl;
 		return -3;
 	}
 	mytime time_start(stoi(timet[0]), stoi(timet[1]));
-	if (!time_start.right_time()) { // провека на время
+	if (!time_start.right_time()) { // РїСЂРѕРІРµСЂРєР° С‡С‚Рѕ С‡Р°СЃРѕРІ РЅРµ Р±РѕР»СЊС€Рµ 24, Р° РјРёРЅСѓС‚ РЅРµ Р±РѕР»СЊС€Рµ 60
 		std::cout << line << std::endl;
 		return -3;
 	}
 	timet = myfuncline(time_pc[1], ':');
-	if (!(isdigit(time_pc[1][0]) and isdigit(time_pc[1][1]) and time_pc[1][2] == ':' and isdigit(time_pc[1][3]) and isdigit(time_pc[1][4]) and time_pc[1].size() < 6)) {// проверка формата второй строки
+	if (!(isdigit(time_pc[1][0]) and isdigit(time_pc[1][1]) and time_pc[1][2] == ':' and isdigit(time_pc[1][3]) and isdigit(time_pc[1][4]) and time_pc[1].size() < 6)) {// РїСЂРІРѕРµСЂРєР° С„РѕСЂРјР°С‚Р° РІСЂРјРµРЅРё
 		std::cout << line << std::endl;
 		return -3;
 	}
 	mytime time_end(stoi(timet[0]), stoi(timet[1]));
 	mytime t_pref(0,0);
-	if (!time_end.right_time()) { // провека на время
+	if (!time_end.right_time()) { // ГЇГ°Г®ГўГҐГЄГ  Г­Г  ГўГ°ГҐГ¬Гї
 		std::cout << line << std::endl;
 		return -3;
 	}
-	//считать цену часа
+	// СЃС‡РёС‚Р°С‚СЊ С†РµРЅСѓ С‡Р°СЃР°
 	getline(file_in, line);
-	for (char c : line) // проверка формата третьей строки
+	for (char c : line) // РїСЂРѕРІРµСЂРєР° С„РѕСЂРјР°С‚Р° 3Р№ СЃС‚СЂРѕРєРё
 		if (!isdigit(c)) {
 			std::cout << line << std::endl;
 			return -4;
 		}
 	club.price = stoi(line);
 
-	// заполнение массивов данных
+	// Р·Р°РїРѕР»РЅРµРЅРёРµ СЃС‚СЂСѓРєС‚С‹СЂСѓ РґР°РЅРЅС‹РјРё
 	for (int i = 0; i < club.num_pc; ++i) {
 		mytime tmp(0, 0);
 		club.time_work_pc.push_back(tmp);
@@ -202,36 +200,35 @@ int main(int argc, char* argv[]) {
 		club.busy_pc.push_back(true);
 	}
 
-	// запись в файл времени начала работы
-	file_out << time_start.tostring() << std::endl;
+	std::cout << time_start.tostring() << std::endl;
 
-	while (getline(file_in, line)) { // считываем построчно сообытия
+	while (getline(file_in, line)) {
 		std::vector<std::string> buff = myfuncline(line, ' ');
 		std::vector<std::string> buff_time = myfuncline(buff[0], ':');
-		if (!(isdigit(buff_time[0][0]) and isdigit(buff_time[0][1]) and isdigit(buff_time[1][0]) and isdigit(buff_time[1][1]) and buff_time.size() < 3)) {// проверка формата второй строки
+		if (!(isdigit(buff_time[0][0]) and isdigit(buff_time[0][1]) and isdigit(buff_time[1][0]) and isdigit(buff_time[1][1]) and buff_time.size() < 3)) {// ГЇГ°Г®ГўГҐГ°ГЄГ  ГґГ®Г°Г¬Г ГІГ  ГўГІГ®Г°Г®Г© Г±ГІГ°Г®ГЄГЁ
 			std::cout << line << std::endl;
 			return -5;
 		}
 		
 		mytime time_event(stoi(buff_time[0]), stoi(buff_time[1]));
-		if (!time_event.right_time()) { // провека на время
+		if (!time_event.right_time()) { // РїСЂРѕРІРµСЂРєР° С„РѕСЂРјР°С‚Р° РІСЂРµРјРЅРё
 			std::cout << line << std::endl;
 			return -5;
 		}
 
-		// првоерка что след событие больше или равно по времени
+		// РїСЂРѕРІРµСЂРєР°, С‡С‚Рѕ СЃРѕР±С‹С‚РёРµ РїРѕ РІСЂРµРјРµРЅРё РёРґРµС‚ РїРѕР·Р¶Рµ, С‡РµРј РїСЂРµРґС‹РґСѓС‰РµРµ
 		if (t_pref.hour > time_event.hour or (t_pref.hour == time_event.hour and t_pref.min > time_event.min)) {
 			std::cout << line;
 			return -5;
 		}
-		// проверка формата на id события
+		// РїСЂРѕРІРµСЂРєР° С„РѕСЂРјР°С‚Р° РЅР° id СЃРѕР±С‹С‚РёСЏ
 		if (buff.size() > 1 and !(isdigit(buff[1][0]))) {
 			std::cout << line << std::endl;
 			return -5;
 		}
 		int id = stoi(buff[1]);
 			
-		for (char c : buff[2]) { // проверка формата на ник
+		for (char c : buff[2]) { // РїСЂРѕРІРµСЂРєР° С„РѕСЂРјР°С‚Р° РёРјРµРЅРё
 			if (!(isdigit(c) or c != '_' or c != '-' or !(islower(c)))) {
 				std::cout << line << std::endl;
 				return -5;
@@ -239,81 +236,79 @@ int main(int argc, char* argv[]) {
 		}
 		std::string name = buff[2];
 		
-		// запись события в выходной файл
-		file_out << line << std::endl;
+		std::cout << line << std::endl;
 
-		// пременная bool рашьне открытия
+		
 		bool start = (time_start.hour > time_event.hour or (time_start.hour == time_event.hour and time_start.min > time_event.min));
-		// переменная bool позже закрытия
 		bool end = (time_end.hour < time_event.hour or (time_end.hour == time_event.hour and time_end.min < time_event.min));
-		if (start or end)  // проверка на время - открыт ли клуб?
-			file_out << buff[0] << " 13 " << "NotOpenYet" << std::endl;
+		if (start or end)  //РїСЂРѕРІРµСЂРєР° РЅР° РІСЂРµРјСЏ СЂР°Р±РѕС‚С‹ РєР»СѓР±Р°
+			std::cout << buff[0] << " 13 " << "NotOpenYet" << std::endl;
 		else {
-			switch (id) { // определяем номер события 
-			case 1: {// обработка события 1  - человек зашел в клуб
-				if (club.in_club.find(name) != club.in_club.end()) // находится человек в клубе ?
-					file_out << buff[0] << " 13 " << "YouShallNotPass" << std::endl;
+			switch (id) { 
+			case 1: {// СЃРѕР±С‹С‚РёРµ 1  - С‡РµР»РѕРІРµРє Р·Р°С€РµР» РІ РєР»СѓР±
+				if (club.in_club.find(name) != club.in_club.end()) // РѕРЅ СѓР¶Рµ РІ РєР»СѓР±Рµ?
+					std::cout << buff[0] << " 13 " << "YouShallNotPass" << std::endl;
 				else
 					club.in_club.insert(name);
 			}
 			break;
-			case 2: {// обработка события 2 - клиент сел за стол
+			case 2: {// СЃРѕР±С‹С‚РёРµ 2  - С‡РµР»РѕРІРµРє СЃРµР» Р·Р° РїРє
 				if (buff.size() == 4) {
-					for (char c : buff[3]) // проверка формата id компьютера 
+					for (char c : buff[3]) // РїСЂРѕРІРµСЂРєР° С„РѕСЂРјР°С‚Р° id РїРє
 						if (!isdigit(c)) {
 							std::cout << line << std::endl;
 							return -5;
 						}
 					int id_pc = stoi(buff[3]);
-					if (id_pc > club.num_pc and id_pc != 0) { // проверка что такой пк есть
+					if (id_pc > club.num_pc and id_pc != 0) { // РїСЂРѕРІРµСЂРєР° С‡С‚Рѕ С‚Р°РєРѕР№ РїРє РµСЃС‚СЊ
 						std::cout << line << std::endl;
 						return -5;
 					}
-					if (club.in_club.find(name) != club.in_club.end()) { // находится человек в клубе ?
-						if (club.busy_pc[id_pc - 1] == false) // место занято ?
-							file_out << buff[0] << " 13 " << "PlaceIsBusy" << std::endl;
+					if (club.in_club.find(name) != club.in_club.end()) { // РѕРЅ СѓР¶Рµ РІ РєР»СѓР±Рµ?
+						if (club.busy_pc[id_pc - 1] == false) // РјРµСЃС‚Рѕ СЃРІРѕР±РѕРґРЅРѕ?
+							std::cout << buff[0] << " 13 " << "PlaceIsBusy" << std::endl;
 						else {
-							if (club.visiter_pc.find(name) != club.visiter_pc.end())  // если он сидел за другим пк
+							if (club.visiter_pc.find(name) != club.visiter_pc.end())  // РµСЃР»Рё РѕРЅ РїРµСЂРµСЃРµР» РѕС‚ РґСЂСѓРіРѕРіРѕ РїРє
 								club.remove_session(name, club.revenue_and_time(name, time_event));
 							club.create_session(id_pc, time_event, name);
 						}
 					}
 					else
-						file_out << buff[0] << " 13 " << "ClientUnknown" << std::endl;
+						std::cout << buff[0] << " 13 " << "ClientUnknown" << std::endl;
 				}
 			}
 			break;
-			case 3: { // обработка события 3 - клиент ожидает
-				if (club.in_club.find(name) != club.in_club.end()) { // находится человек в клубе ?
-					if (free_pc(club.busy_pc)) // есть свободные столы ?
-						file_out << buff[0] << " 13 " << "ICanWaitNoLonger" << std::endl;
-					else if (club.queue.size() == club.num_pc) { // если очередь заполнена ?
-						file_out << buff[0] << " 11 " << name << std::endl;
+			case 3: { // СЃРѕР±С‹С‚РёРµ 3 - РєР»РёРµРЅС‚ РѕР¶РёРґР°РµС‚
+				if (club.in_club.find(name) != club.in_club.end()) { // РѕРЅ РІ РєР»СѓР±Рµ?
+					if (free_pc(club.busy_pc)) // РµСЃС‚СЊ СЃРІРѕР±РѕРґРЅС‹Рµ РїРє?
+						std::cout << buff[0] << " 13 " << "ICanWaitNoLonger" << std::endl;
+					else if (club.queue.size() == club.num_pc) { // РІ РѕС‡РµСЂРµРґРё РµСЃС‚СЊ РјРµСЃС‚Р°?
+						std::cout << buff[0] << " 11 " << name << std::endl;
 						club.in_club.erase(club.in_club.find(name));
 					}
 					else 
 						club.queue.push(name);
 				}
 				else 
-					file_out << buff[0] << " 13 " << "ClientUnknown" << std::endl;
+					std::cout << buff[0] << " 13 " << "ClientUnknown" << std::endl;
 			}
 			break;
-			case 4: { // обработка события 4 - клиент ушел
-				if (club.in_club.find(name) != club.in_club.end()) { // находится человек в клубе ?
-					if (club.visiter_pc.find(name) != club.visiter_pc.end()) { // сидел ли человек за пк?
+			case 4: { // СЃРѕР±С‹С‚РёРµ 4 - РєР»РёРµРЅС‚ СѓС€РµР»
+				if (club.in_club.find(name) != club.in_club.end()) { // РѕРЅ РІ РєР»СѓР±Рµ?
+					if (club.visiter_pc.find(name) != club.visiter_pc.end()) { // СЃРёРґРµР» Р»Рё РѕРЅ Р·Р° РїРє? 
 						int pc_id = club.revenue_and_time(name, time_event);
 						club.remove_session(name, pc_id);
-						if (club.queue.size() > 0) { // проверка на очередь
+						if (club.queue.size() > 0) { // РµСЃС‚СЊ РѕР¶РёРґР°СЋС‰РёРµ?
 							club.create_session(pc_id, time_event, club.queue.front());
-							file_out << buff[0] << " 12 " << club.queue.front() << ' ' << pc_id << std::endl;
+							std::cout << buff[0] << " 12 " << club.queue.front() << ' ' << pc_id << std::endl;
 							club.queue.pop();
 						}
 					}
-					file_out << buff[0] << " 11 " << *club.in_club.find(name) << std::endl;
+					std::cout << buff[0] << " 11 " << *club.in_club.find(name) << std::endl;
 					club.in_club.erase(club.in_club.find(name));
 				}
 				else
-					file_out << buff[0] << " 13 " << "ClientUnknown" << std::endl;
+					std::cout << buff[0] << " 13 " << "ClientUnknown" << std::endl;
 			}
 			break;
 			default: {
@@ -324,21 +319,19 @@ int main(int argc, char* argv[]) {
 		}
 		t_pref = time_event;
 	}
-	// Проверка на неушедших после закрытия
+	// РїСЂРѕРІРµСЂРєР° РЅР° РЅРµСѓС€РµРґС€РёС… РїРѕСЃР»Рµ Р·Р°РєСЂС‹С‚РёСЏ
 	for (; club.in_club.size() > 0;) {
-		if (club.visiter_pc.find(*(club.in_club.begin())) != club.visiter_pc.end()) // сидел ли человек за пк?
+		if (club.visiter_pc.find(*(club.in_club.begin())) != club.visiter_pc.end()) //  СЃРёРґРµР» Р»Рё РѕРЅ Р·Р° РїРє?
 			club.revenue_and_time(*(club.in_club.begin()), time_end);
-		file_out << time_end.tostring() << " 11 " << *(club.in_club.begin()) << std::endl;
+		std::cout << time_end.tostring() << " 11 " << *(club.in_club.begin()) << std::endl;
 		club.in_club.erase(club.in_club.begin());
 	}
 
-	// вывод времени окончания работы клуба
-	file_out << time_end.tostring() << std::endl;
-	// вывод прибыли и врмени использования каждого пк
+	std::cout << time_end.tostring() << std::endl;
+	// РІС‹РІРѕРґ РїСЂРёР±С‹Р»Рё Рё РІСЂРµРјРµРЅРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РєР°Р¶РґРѕРіРѕ РїРє
 	for (int i = 0; i < club.num_pc; ++i)
-		file_out << (i + 1) << ' ' << club.revenue_pc[i] << ' ' << club.time_work_pc[i].tostring() << std::endl;
+		std::cout << (i + 1) << ' ' << club.revenue_pc[i] << ' ' << club.time_work_pc[i].tostring() << std::endl;
 
-	file_out.close();
 	file_in.close();
 	return 0;
 }
