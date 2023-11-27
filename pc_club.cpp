@@ -304,7 +304,6 @@ int main(int argc, char* argv[]) {
 							club.queue.pop();
 						}
 					}
-					std::cout << buff[0] << " 11 " << *club.in_club.find(name) << std::endl;
 					club.in_club.erase(club.in_club.find(name));
 				}
 				else
